@@ -1,6 +1,7 @@
 package mx.unam.aragon.modelo;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Rectangle;
 
@@ -11,6 +12,8 @@ public class Pelota extends ComponentesJuego {
     private Boolean fueraPelota = false;
     private int grados;
     private int radio;
+    private String imagen;
+    private Image bala;
 
     public Pelota(int x, int y, String imagen, int velocidad) {
         super(x, y, imagen, velocidad);
@@ -32,10 +35,9 @@ public class Pelota extends ComponentesJuego {
 
     @Override
     public void pintar(GraphicsContext graficos) {
-        graficos.strokeRect(pelota.getX(), pelota.getY(), pelota.getWidth(),
-                pelota.getHeight());
+        graficos.drawImage( bala,pelota.getX(), pelota.getY(), pelota.getWidth(), pelota.getHeight());
         graficos.fillOval(pelota.getX(), pelota.getY(), pelota.getWidth(),
-                pelota.getHeight());
+            pelota.getHeight());
     }
 
     @Override
@@ -100,5 +102,23 @@ public class Pelota extends ComponentesJuego {
 
     public Boolean getFueraPelota() {
         return fueraPelota;
+    }
+
+    public Image getBala() {
+        return bala;
+    }
+
+    public void setBala(Image bala) {
+        this.bala = bala;
+    }
+
+    @Override
+    public String getImagen() {
+        return imagen;
+    }
+
+    @Override
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 }

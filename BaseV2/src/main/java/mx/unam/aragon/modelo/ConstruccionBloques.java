@@ -29,7 +29,7 @@ public class ConstruccionBloques extends ComponentesJuego{
         for (int y = 0; y <=60; y+=alto ) {
             switch(y){
                 case 0:
-                    ruta= Raton.class.getResourceAsStream("bloque1.png");
+                    ruta= Raton.class.getResourceAsStream("Botella_Cerveza.png");
                     imagen=new Image(ruta);
                     break;
                 case 30:

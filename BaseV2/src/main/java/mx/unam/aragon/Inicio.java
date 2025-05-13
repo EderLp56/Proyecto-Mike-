@@ -27,6 +27,7 @@ public class Inicio extends Application {
     private Colisiones colisiones;
     private Thread hiloEfecto=null;
     private Stage stage;
+    private BotellaUno botella;
     @Override
     public void start(Stage stage) throws IOException, URISyntaxException {
         componentesIniciar();
@@ -82,6 +83,7 @@ public class Inicio extends Application {
         bloques.pintar(graficos);
         barra.pintar(graficos);
         pelota.pintar(graficos);
+        botella.pintar(graficos);
     }
 
     private void componentesIniciar() throws URISyntaxException {
@@ -91,9 +93,10 @@ public class Inicio extends Application {
         root.getChildren().add(hoja);
         graficos = hoja.getGraphicsContext2D();
         fondo = new Fondo(0, 0, "Fondo2_BarShooter.jpg", 3);
-        bloques=new ConstruccionBloques(0,0,"",1,1,10);
+        bloques=new ConstruccionBloques(0,0,"",1,1,3);
         barra=new Raton(300, 500, "", 3);
-        pelota=new Pelota(300,200,"",3);
+        pelota=new Pelota(300,200, "Bala_BarShooter.png",3);
+        botella =new BotellaUno(400, 400, "Botella_Cerveza.png",0);
         colisiones=new Colisiones(bloques,barra,pelota);
         }
 
