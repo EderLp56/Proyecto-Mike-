@@ -26,6 +26,7 @@ public class Inicio extends Application {
     private Raton barra;
     private Stage stage;
     private BotellaUno botella;
+    private BotellaDos botellaDos;
     private Thread hiloEfecto=null;
 
     @Override
@@ -65,6 +66,7 @@ public class Inicio extends Application {
         this.fondo.logicaCalculos();
         this.barra.logicaCalculos();
         this.botella.logicaCalculos();
+        this.botellaDos.logicaCalculos();
 
     }
 
@@ -72,6 +74,7 @@ public class Inicio extends Application {
         fondo.pintar(graficos);
         barra.pintar(graficos);
         botella.pintar(graficos);
+        botellaDos.pintar(graficos);
     }
 
     private void componentesIniciar() throws URISyntaxException {
@@ -83,7 +86,8 @@ public class Inicio extends Application {
         fondo = new Fondo(0, 0, "Fondo2_BarShooter.jpg", 3);
         barra=new Raton(300, 500, "", 3);
         botella=new BotellaUno(-15, -15, "Botella_Cerveza.png",0);
-        }
+        botellaDos= new BotellaDos(-30, 50, "Botella_Dos_BarShooter.png",0);
+    }
 
     private void eventosTeclado() {
         escena.setOnKeyPressed(new EventHandler<KeyEvent>() {
