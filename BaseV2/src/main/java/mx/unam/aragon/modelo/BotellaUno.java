@@ -4,105 +4,86 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Rectangle;
-
 import java.io.InputStream;
-import java.util.Random;
-/*
-public class BotellaUno extends ComponentesJuego{
+
+public class BotellaUno extends ComponentesJuego {
     private Rectangle botella;
     private Image imagen;
-
-
-    private void iniciarComponente() {
-        botella=new Rectangle(x, y, 80, 80);
-        InputStream ruta= Raton.class.getResourceAsStream("Botella_Cerveza.png");
-        imagen=new Image(ruta);
-    }
-
+    private double velocidadY = 9;  // Velocidad inicial de caída
+    private double gravedad = 2;  // Aceleración por gravedad más suave (ajustado a 0.2 para caída lenta)
+    private double velocidadMaxima = 2; // Velocidad máxima para evitar caída demasiado rápida
+    private Boolean fueraPantalla = false;
 
     public BotellaUno(int x, int y, String imagen, int velocidad) {
         super(x, y, imagen, velocidad);
         iniciarComponente();
+    }
+
+    private void iniciarComponente() {
+        botella = new Rectangle(x, y, 80, 80);
+        InputStream ruta = BotellaUno.class.getResourceAsStream("Botella_Cerveza.png");
+        imagen = new Image(ruta);
     }
 
     @Override
     public void pintar(GraphicsContext graficos) {
         graficos.strokeRect(botella.getX(), botella.getY(), botella.getWidth(),
                 botella.getHeight());
-        graficos.drawImage (imagen,botella.getX(), botella.getY(), botella.getWidth(),
+        graficos.drawImage(imagen, botella.getX(), botella.getY(), botella.getWidth(),
                 botella.getHeight());
     }
 
     @Override
     public void teclado(KeyEvent evento, boolean presiona) {
-
+        // Implementación de teclado si es necesaria
     }
 
     @Override
     public void raton(KeyEvent evento) {
-
+        // Implementación de ratón si es necesaria
     }
 
     @Override
     public void logicaCalculos() {
+        // Simula la caída por gravedad
+        velocidadY += gravedad;  // Aceleración hacia abajo (gravedad)
 
-    }
-}
-*/
+        // Evitar que la velocidad de caída sea mayor que el límite
+        if (velocidadY > velocidadMaxima) {
+            velocidadY = velocidadMaxima;
+        }
 
+        y += velocidadY;         // Actualiza la posición en el eje Y
+        botella.setY(y);         // Actualiza la posición del objeto en pantalla
 
-public class BotellaUno extends ComponentesJuego {
-    private Rectangle botella;
-    private Image imagen;
-    private Random random;
-    private int frameCounter = 0;
-    private final int cambioIntervalo =10; // Cambia de posición cada 100 frames
-
-    private void iniciarComponente() {
-        random = new Random();
-        x = random.nextInt(600 - 80); // Posición aleatoria inicial
-        y = random.nextInt(600 - 80);
-
-        botella = new Rectangle(x, y, 80, 80);
-        InputStream ruta = Raton.class.getResourceAsStream("Botella_Cerveza.png");
-        imagen = new Image(ruta);
-    }
-
-    public BotellaUno(int x, int y, String imagen, int velocidad) {
-        super(x, y, imagen, velocidad);
-        iniciarComponente();
-    }
-
-    @Override
-    public void pintar(GraphicsContext graficos) {
-        graficos.strokeRect(botella.getX(), botella.getY(), botella.getWidth(), botella.getHeight());
-        graficos.drawImage(imagen, botella.getX(), botella.getY(), botella.getWidth(), botella.getHeight());
-    }
-
-    @Override
-    public void teclado(KeyEvent evento, boolean presiona) {
-        // No se usa por ahora
-    }
-
-    @Override
-    public void raton(KeyEvent evento) {
-        // No se usa por ahora
-    }
-
-    @Override
-    public void logicaCalculos() {
-
-        // Movimiento hacia abajo
-        y += velocidad; // velocidad ya viene del constructor
-        botella.setY(y);
-        frameCounter++;
-
-        if (frameCounter >= cambioIntervalo) {
-            x = random.nextInt(800 - 80);
-            y = random.nextInt(600 - 80);
-            botella.setX(x);
-            botella.setY(y);
-            frameCounter = 0;
+        // Límites de pantalla (para evitar que la botella se salga)
+        if (y > 600) {           // Si se pasa de la pantalla
+            fueraPantalla = true;
+            y = 600;             // Se ajusta a la base de la pantalla
+            velocidadY = 0;      // Se detiene la caída
         }
     }
+
+    // Métodos para modificar la velocidad y gravedad en tiempo real
+    public void modificarVelocidad(double nuevaVelocidadY) {
+        this.velocidadY = nuevaVelocidadY;
+    }
+
+    public void modificarGravedad(double nuevaGravedad) {
+        this.gravedad = nuevaGravedad;
+    }
+
+    // Getters y Setters
+    public Rectangle getBotella() {
+        return botella;
+    }
+
+    public Boolean getFueraPantalla() {
+        return fueraPantalla;
+    }
 }
+
+
+
+
+

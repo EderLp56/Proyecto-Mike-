@@ -64,6 +64,7 @@ public class Inicio extends Application {
     private void calculosLogica() {
         this.fondo.logicaCalculos();
         this.barra.logicaCalculos();
+        this.botella.logicaCalculos();
 
     }
 
@@ -81,7 +82,7 @@ public class Inicio extends Application {
         graficos = hoja.getGraphicsContext2D();
         fondo = new Fondo(0, 0, "Fondo2_BarShooter.jpg", 3);
         barra=new Raton(300, 500, "", 3);
-        botella=new BotellaUno(400, 400, "Botella_Cerveza.png",0);
+        botella=new BotellaUno(-15, -15, "Botella_Cerveza.png",0);
         }
 
     private void eventosTeclado() {
