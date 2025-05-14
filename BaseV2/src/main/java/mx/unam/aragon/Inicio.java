@@ -9,7 +9,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import mx.unam.aragon.extra.MusicaCiclica;
 import mx.unam.aragon.modelo.*;
 
 import java.io.IOException;
@@ -21,11 +20,7 @@ public class Inicio extends Application {
     private Scene escena;
     private Canvas hoja;
     private Fondo fondo;
-    private ConstruccionBloques bloques ;
     private Raton barra;
-    private Pelota pelota;
-    private Colisiones colisiones;
-    private Thread hiloEfecto=null;
     private Stage stage;
     private BotellaUno botella;
     @Override
@@ -38,15 +33,7 @@ public class Inicio extends Application {
         stage.show();
         ciclo();
         this.stage=stage;
-        MusicaCiclica musica=new MusicaCiclica("musica_entrada");
-        hiloEfecto=new Thread(musica);
-        hiloEfecto.start();
 
-    }
-    @SuppressWarnings("deprecation")
-    @Override
-    public void stop() throws Exception {
-        hiloEfecto.stop();
     }
 
     private void ciclo() {
@@ -55,7 +42,6 @@ public class Inicio extends Application {
             @Override
             public void handle(long tiempoActual) {
                 double t = (tiempoActual - tiempoInicio) / 1000000000.0;
-
                 calculosLogica();
                 pintar();
             }
@@ -65,24 +51,12 @@ public class Inicio extends Application {
     private void calculosLogica() {
         this.fondo.logicaCalculos();
         this.barra.logicaCalculos();
-        this.pelota.logicaCalculos();
-        this.colisiones.colisionesPelotaBarra();
-        if(pelota.getFueraPelota()){
 
-//                bloques=new ConstruccionBloques(0,0,"",1,1,10);
-//                barra=new Barra(300, 500, "", 3);
-//                pelota=new Pelota(300,200,"",3);
-//                colisiones=new Colisiones(bloques,barra,pelota);
-
-            stage.close();
-        }
     }
 
     private void pintar() {
         fondo.pintar(graficos);
-        bloques.pintar(graficos);
         barra.pintar(graficos);
-        pelota.pintar(graficos);
         botella.pintar(graficos);
     }
 
@@ -93,11 +67,8 @@ public class Inicio extends Application {
         root.getChildren().add(hoja);
         graficos = hoja.getGraphicsContext2D();
         fondo = new Fondo(0, 0, "Fondo2_BarShooter.jpg", 3);
-        bloques=new ConstruccionBloques(0,0,"",1,1,3);
         barra=new Raton(300, 500, "", 3);
-        pelota=new Pelota(300,200, "Bala_BarShooter.png",3);
-        botella =new BotellaUno(400, 400, "Botella_Cerveza.png",0);
-        colisiones=new Colisiones(bloques,barra,pelota);
+        botella=new BotellaUno(400, 400, "Botella_Cerveza.png",0);
         }
 
     private void eventosTeclado() {

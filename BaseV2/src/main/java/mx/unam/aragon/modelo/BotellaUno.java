@@ -56,7 +56,7 @@ public class BotellaUno extends ComponentesJuego {
     private Image imagen;
     private Random random;
     private int frameCounter = 0;
-    private final int cambioIntervalo = 20; // Cambia de posición cada 100 frames
+    private final int cambioIntervalo =10; // Cambia de posición cada 100 frames
 
     private void iniciarComponente() {
         random = new Random();
@@ -91,6 +91,10 @@ public class BotellaUno extends ComponentesJuego {
 
     @Override
     public void logicaCalculos() {
+
+        // Movimiento hacia abajo
+        y += velocidad; // velocidad ya viene del constructor
+        botella.setY(y);
         frameCounter++;
 
         if (frameCounter >= cambioIntervalo) {

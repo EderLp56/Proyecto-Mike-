@@ -2,6 +2,7 @@ package mx.unam.aragon.modelo;
 
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
 
 public class Bloque {
     private Rectangle rectangulo;
