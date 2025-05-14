@@ -9,7 +9,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import mx.unam.aragon.extra.Musica;
 import mx.unam.aragon.modelo.*;
+
+
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -23,6 +26,8 @@ public class Inicio extends Application {
     private Raton barra;
     private Stage stage;
     private BotellaUno botella;
+    private Thread hiloEfecto=null;
+
     @Override
     public void start(Stage stage) throws IOException, URISyntaxException {
         componentesIniciar();
@@ -33,7 +38,15 @@ public class Inicio extends Application {
         stage.show();
         ciclo();
         this.stage=stage;
+        Musica musica=new Musica("Musica_Bar_Shooter");
+        hiloEfecto=new Thread(musica);
+        hiloEfecto.start();
 
+
+    }
+    @Override
+    public void stop() throws  Exception{
+        hiloEfecto.stop();
     }
 
     private void ciclo() {
