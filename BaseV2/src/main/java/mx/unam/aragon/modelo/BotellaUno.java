@@ -20,7 +20,7 @@ public class BotellaUno extends ComponentesJuego {
     }
 
     private void iniciarComponente() {
-        botella = new Rectangle(x, y, 80, 80);
+        botella = new Rectangle(x, y, 50, 50);
         InputStream ruta = BotellaUno.class.getResourceAsStream("Botella_Cerveza.png");
         imagen = new Image(ruta);
     }
@@ -82,7 +82,6 @@ public class BotellaUno extends ComponentesJuego {
         return fueraPantalla;
     }
 }
-
 
 
 
