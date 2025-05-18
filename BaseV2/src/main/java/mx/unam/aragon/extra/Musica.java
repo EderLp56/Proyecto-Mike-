@@ -28,7 +28,6 @@ public class Musica implements Runnable {
                 Musica.class.getResourceAsStream(archivo+".mp3");
 
         this.archivo = ruta;
-        //this.getClass().getResource("/unam/aragon/mx/basevideojuego/modelo/"+ nombreArchivo + ".mp3").toURI().getPath());
     }
 
     @Override

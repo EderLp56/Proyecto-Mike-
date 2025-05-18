@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import mx.unam.aragon.extra.Musica;
 import mx.unam.aragon.modelo.*;
@@ -14,7 +15,6 @@ import mx.unam.aragon.modelo.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import javafx.scene.input.KeyCode;
 
 public class Inicio extends Application {
     private GraphicsContext graficos;
@@ -28,7 +28,6 @@ public class Inicio extends Application {
     private BotellaDos botellaDos;
     private Thread hiloEfecto = null;
 
-    // Lista para manejar múltiples balas
     private ArrayList<Bala> balas = new ArrayList<>();
 
     @Override
@@ -65,15 +64,31 @@ public class Inicio extends Application {
     }
 
     private void calculosLogica() {
-        this.fondo.logicaCalculos();
-        this.barra.logicaCalculos();
-        this.botella.logicaCalculos();
-        this.botellaDos.logicaCalculos();
+        fondo.logicaCalculos();
+        barra.logicaCalculos();
+        botella.logicaCalculos();
+        botellaDos.logicaCalculos();
 
-        // Actualizar la lógica de cada bala y remover las que están fuera de pantalla usando for inverso
         for (int i = balas.size() - 1; i >= 0; i--) {
             Bala bala = balas.get(i);
             bala.logicaCalculos();
+
+            Rectangle rBala = new Rectangle(bala.getX(), bala.getY(), 16, 16);
+
+            // Colisión con BotellaUno
+            if (rBala.intersects(botella.getBotella().getBoundsInLocal())) {
+                balas.remove(i);
+                botella.setY(-150); // reinicia posición
+                continue;
+            }
+
+            // Colisión con BotellaDos
+            if (rBala.intersects(botellaDos.getBotella().getBoundsInLocal())) {
+                balas.remove(i);
+                botellaDos.setY(-150);
+                continue;
+            }
+
             if (bala.isFueraPantalla()) {
                 balas.remove(i);
             }
@@ -85,8 +100,6 @@ public class Inicio extends Application {
         barra.pintar(graficos);
         botella.pintar(graficos);
         botellaDos.pintar(graficos);
-
-        // Pintar todas las balas
         for (Bala bala : balas) {
             bala.pintar(graficos);
         }
@@ -102,18 +115,18 @@ public class Inicio extends Application {
         barra = new Raton(300, 500, "Raton_BarShooter.png", 3);
         botella = new BotellaUno(0, -150, "Botella_Cerveza.png", 0);
         botellaDos = new BotellaDos(90, -150, "Botella_Dos_BarShooter.png", 0);
-
     }
+
     private void eventosTeclado() {
         escena.setOnKeyPressed(evento -> {
             barra.teclado(evento, true);
 
             if (evento.getCode() == javafx.scene.input.KeyCode.SPACE) {
                 Bala nuevaBala = new Bala(
-                        (int) barra.getX() + (int) barra.getBarra().getWidth() / 2,
+                        (int) barra.getX() + (int) barra.getBarra().getWidth() / 2 - 8,
                         (int) barra.getY(),
-                        "Bala_Raton.png",   // si tienes imagen pon la ruta, o "" para rectángulo simple
-                        10    // velocidad hacia arriba
+                        "Bala_Raton.png",
+                        10
                 );
                 balas.add(nuevaBala);
             }
@@ -122,8 +135,8 @@ public class Inicio extends Application {
         escena.setOnKeyReleased(evento -> barra.teclado(evento, false));
     }
 
-
     public static void main(String[] args) {
         launch();
     }
 }
+
