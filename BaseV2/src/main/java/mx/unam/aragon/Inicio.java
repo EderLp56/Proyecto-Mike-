@@ -11,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import mx.unam.aragon.extra.Musica;
 import mx.unam.aragon.modelo.*;
+import java.util.Random;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -27,6 +28,8 @@ public class Inicio extends Application {
     private BotellaUno botella;
     private BotellaDos botellaDos;
     private Thread hiloEfecto = null;
+    private BotellaTres botella3;
+    private Colisiones colisiones;
 
     private ArrayList<Bala> balas = new ArrayList<>();
 
@@ -68,29 +71,48 @@ public class Inicio extends Application {
         barra.logicaCalculos();
         botella.logicaCalculos();
         botellaDos.logicaCalculos();
+        botella3.logicaCalculos();
+
+
+        Random rand = new Random();
+        int anchoMaximo = 450; // Ancho máximo para la posición X (ajusta según tu escena)
 
         for (int i = balas.size() - 1; i >= 0; i--) {
             Bala bala = balas.get(i);
             bala.logicaCalculos();
-
-            Rectangle rBala = new Rectangle(bala.getX(), bala.getY(), 16, 16);
+            Rectangle rBala = new Rectangle(bala.getX(), bala.getY(), 16, 32);
 
             // Colisión con BotellaUno
             if (rBala.intersects(botella.getBotella().getBoundsInLocal())) {
                 balas.remove(i);
-                botella.setY(-150); // reinicia posición
-                continue;
+                int randomX = rand.nextInt(anchoMaximo);
+                botella.setX(randomX);
+                botella.setY(-150);
             }
 
             // Colisión con BotellaDos
             if (rBala.intersects(botellaDos.getBotella().getBoundsInLocal())) {
                 balas.remove(i);
+                int randomX = rand.nextInt(anchoMaximo);
+                botellaDos.setX(randomX);
                 botellaDos.setY(-150);
-                continue;
+
             }
 
+            // Colisión con BotellaTres
+            if (rBala.intersects(botella3.getBotella().getBoundsInLocal())) {
+                balas.remove(i);
+                int randomX = rand.nextInt(anchoMaximo);
+                botella3.setX(randomX);
+                botella3.setY(-150);
+            }
+
+            // Si la bala está fuera de pantalla la eliminamos
             if (bala.isFueraPantalla()) {
                 balas.remove(i);
+            }
+            if (botella.getFueraPantalla()||botellaDos.getFueraPantalla()||botella3.getFueraPantalla()){
+                stage.close();
             }
         }
     }
@@ -100,6 +122,7 @@ public class Inicio extends Application {
         barra.pintar(graficos);
         botella.pintar(graficos);
         botellaDos.pintar(graficos);
+        botella3.pintar(graficos);
         for (Bala bala : balas) {
             bala.pintar(graficos);
         }
@@ -107,7 +130,7 @@ public class Inicio extends Application {
 
     private void componentesIniciar() throws URISyntaxException {
         root = new Group();
-        escena = new Scene(root, 500, 600);
+        escena = new Scene(root, 500, 600);//y , x
         hoja = new Canvas(500, 600);
         root.getChildren().add(hoja);
         graficos = hoja.getGraphicsContext2D();
@@ -115,6 +138,8 @@ public class Inicio extends Application {
         barra = new Raton(300, 500, "Raton_BarShooter.png", 3);
         botella = new BotellaUno(0, -150, "Botella_Cerveza.png", 0);
         botellaDos = new BotellaDos(90, -150, "Botella_Dos_BarShooter.png", 0);
+        botella3=new BotellaTres(200, -150, "Botella3_Bar_Shooter.png", 0);
+
     }
 
     private void eventosTeclado() {

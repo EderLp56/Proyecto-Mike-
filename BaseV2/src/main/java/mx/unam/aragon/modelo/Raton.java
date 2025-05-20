@@ -62,14 +62,19 @@ public class Raton extends ComponentesJuego{
 
     @Override
     public void logicaCalculos() {
-        if (izquierda){
-            x-=velocidad;
+        if (izquierda) {
+            x -= velocidad;
+            if (x < 0) {
+                x = 0;
+            }
         }
-        if(derecha){
-            x+=velocidad;
+        if (derecha) {
+            x += velocidad;
+            if (x + barra.getWidth() > 500) {
+                x = (int) (500 - barra.getWidth());
+            }
         }
         barra.setX(x);
-
     }
 
     public Rectangle getBarra() {

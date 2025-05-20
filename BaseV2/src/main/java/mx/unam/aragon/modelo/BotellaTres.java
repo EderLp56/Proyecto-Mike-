@@ -6,24 +6,23 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Rectangle;
 import java.io.InputStream;
-import java.util.Random;
 
-public class BotellaUno extends ComponentesJuego {
+public class BotellaTres extends ComponentesJuego {
     private Rectangle botella;
     private Image imagen;
-    private double velocidadY = 0;  // Velocidad inicial de caída (empieza en 0)
-    private double gravedad = 0.2;  // Gravedad más suave para caída lenta
+    private double velocidadY = 0;  // Empieza con velocidad 0
+    private double gravedad = 0.2;  // Gravedad suave para caída lenta
     private double velocidadMaxima = 2; // Velocidad máxima de caída
     private Boolean fueraPantalla = false;
 
-    public BotellaUno(int x, int y, String imagen, int velocidad) {
+    public BotellaTres(int x, int y, String imagen, int velocidad) {
         super(x, y, imagen, velocidad);
         iniciarComponente();
     }
 
     private void iniciarComponente() {
         botella = new Rectangle(x, y, 50, 50);
-        InputStream ruta = BotellaDos.class.getResourceAsStream("Botella_Cerveza.png");
+        InputStream ruta = BotellaTres.class.getResourceAsStream("Botella3_Bar_Shooter.png");
         imagen = new Image(ruta);
     }
 
@@ -70,13 +69,11 @@ public class BotellaUno extends ComponentesJuego {
         this.gravedad = nuevaGravedad;
     }
 
-    // Método para actualizar la posición X
     public void setX(int nuevoX) {
         this.x = nuevoX;
         botella.setX(nuevoX);
     }
 
-    // Método para actualizar la posición Y
     public void setY(int nuevoY) {
         this.y = nuevoY;
         botella.setY(nuevoY);
@@ -90,3 +87,4 @@ public class BotellaUno extends ComponentesJuego {
         return fueraPantalla;
     }
 }
+
