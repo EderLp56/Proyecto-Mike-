@@ -11,11 +11,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import mx.unam.aragon.extra.Musica;
 import mx.unam.aragon.modelo.*;
-import java.util.Random;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Inicio extends Application {
     private GraphicsContext graficos;
@@ -25,12 +25,10 @@ public class Inicio extends Application {
     private Fondo fondo;
     private Raton barra;
     private Stage stage;
-    private BotellaUno botella;
-    private BotellaDos botellaDos;
     private Thread hiloEfecto = null;
-    private BotellaTres botella3;
-    private Colisiones colisiones;
-
+    private Contador contador;
+    private boolean espacioPresionado = false;
+    private ArrayList<BotellaBase> botellas = new ArrayList<>();
     private ArrayList<Bala> balas = new ArrayList<>();
 
     @Override
@@ -58,7 +56,7 @@ public class Inicio extends Application {
         AnimationTimer tiempo = new AnimationTimer() {
             @Override
             public void handle(long tiempoActual) {
-                double t = (tiempoActual - tiempoInicio) / 1000000000.0;
+                double t = (tiempoActual - tiempoInicio) / 1_000_000_000.0;
                 calculosLogica();
                 pintar();
             }
@@ -69,49 +67,33 @@ public class Inicio extends Application {
     private void calculosLogica() {
         fondo.logicaCalculos();
         barra.logicaCalculos();
-        botella.logicaCalculos();
-        botellaDos.logicaCalculos();
-        botella3.logicaCalculos();
-
 
         Random rand = new Random();
-        int anchoMaximo = 450; // Ancho máximo para la posición X (ajusta según tu escena)
+        int anchoMaximo = 450;
 
         for (int i = balas.size() - 1; i >= 0; i--) {
             Bala bala = balas.get(i);
             bala.logicaCalculos();
             Rectangle rBala = new Rectangle(bala.getX(), bala.getY(), 16, 32);
 
-            // Colisión con BotellaUno
-            if (rBala.intersects(botella.getBotella().getBoundsInLocal())) {
-                balas.remove(i);
-                int randomX = rand.nextInt(anchoMaximo);
-                botella.setX(randomX);
-                botella.setY(-150);
+            for (BotellaBase botella : botellas) {
+                if (rBala.intersects(botella.getBotella().getBoundsInLocal())) {
+                    balas.remove(i);
+                    botella.setX(rand.nextInt(anchoMaximo));
+                    botella.setY(-150);
+                    contador.aumentarPuntaje(botella.getValor());
+                    break;
+                }
             }
 
-            // Colisión con BotellaDos
-            if (rBala.intersects(botellaDos.getBotella().getBoundsInLocal())) {
-                balas.remove(i);
-                int randomX = rand.nextInt(anchoMaximo);
-                botellaDos.setX(randomX);
-                botellaDos.setY(-150);
-
-            }
-
-            // Colisión con BotellaTres
-            if (rBala.intersects(botella3.getBotella().getBoundsInLocal())) {
-                balas.remove(i);
-                int randomX = rand.nextInt(anchoMaximo);
-                botella3.setX(randomX);
-                botella3.setY(-150);
-            }
-
-            // Si la bala está fuera de pantalla la eliminamos
             if (bala.isFueraPantalla()) {
                 balas.remove(i);
             }
-            if (botella.getFueraPantalla()||botellaDos.getFueraPantalla()||botella3.getFueraPantalla()){
+        }
+
+        for (BotellaBase botella : botellas) {
+            botella.logicaCalculos();
+            if (botella.getFueraPantalla()) {
                 stage.close();
             }
         }
@@ -120,9 +102,12 @@ public class Inicio extends Application {
     private void pintar() {
         fondo.pintar(graficos);
         barra.pintar(graficos);
-        botella.pintar(graficos);
-        botellaDos.pintar(graficos);
-        botella3.pintar(graficos);
+        graficos.setFont(javafx.scene.text.Font.font("Verdana", 18));
+        graficos.setFill(javafx.scene.paint.Color.WHITE);
+        graficos.fillText("Puntaje: " + contador.getPuntaje(),  10,25);
+        for (BotellaBase botella : botellas) {
+            botella.pintar(graficos);
+        }
         for (Bala bala : balas) {
             bala.pintar(graficos);
         }
@@ -130,19 +115,23 @@ public class Inicio extends Application {
 
     private void componentesIniciar() throws URISyntaxException {
         root = new Group();
-        escena = new Scene(root, 500, 600);//y , x
+        escena = new Scene(root, 500, 600);
         hoja = new Canvas(500, 600);
         root.getChildren().add(hoja);
         graficos = hoja.getGraphicsContext2D();
+
+
         fondo = new Fondo(0, 0, "Fondo2_BarShooter.jpg", 3);
         barra = new Raton(300, 500, "Raton_BarShooter.png", 3);
-        botella = new BotellaUno(0, -150, "Botella_Cerveza.png", 0);
-        botellaDos = new BotellaDos(90, -150, "Botella_Dos_BarShooter.png", 0);
-        botella3=new BotellaTres(200, -150, "Botella3_Bar_Shooter.png", 0);
+        contador=new Contador();
 
+        // Agregar múltiples botellas base
+        botellas.add(new BotellaBase(0, -150, "Botella_Cerveza.png", 0, 6));
+        botellas.add(new BotellaBase(90, -150, "Botella_Dos_BarShooter.png", 0, 9));
+        botellas.add(new BotellaBase(200, -150, "Botella3_Bar_Shooter.png", 0, 10));
+        botellas.add(new BotellaBase(400, -150, "Botella_Cuatro.png", 0, 3));
     }
-
-    private void eventosTeclado() {
+    /*private void eventosTeclado() {
         escena.setOnKeyPressed(evento -> {
             barra.teclado(evento, true);
 
@@ -155,10 +144,36 @@ public class Inicio extends Application {
                 );
                 balas.add(nuevaBala);
             }
+
+        });
+        escena.setOnKeyReleased(evento -> barra.teclado(evento, false));
+    }*/
+    private void eventosTeclado() {
+        escena.setOnKeyPressed(evento -> {
+            barra.teclado(evento, true);
+
+            if (evento.getCode() == javafx.scene.input.KeyCode.SPACE && !espacioPresionado) {
+                espacioPresionado = true;
+
+                Bala nuevaBala = new Bala(
+                        (int) barra.getX() + (int) barra.getBarra().getWidth() / 2 - 8,
+                        (int) barra.getY(),
+                        "Bala_Raton.png",
+                        10
+                );
+                balas.add(nuevaBala);
+            }
         });
 
-        escena.setOnKeyReleased(evento -> barra.teclado(evento, false));
+        escena.setOnKeyReleased(evento -> {
+            barra.teclado(evento, false);
+
+            if (evento.getCode() == javafx.scene.input.KeyCode.SPACE) {
+                espacioPresionado = false;
+            }
+        });
     }
+
 
     public static void main(String[] args) {
         launch();

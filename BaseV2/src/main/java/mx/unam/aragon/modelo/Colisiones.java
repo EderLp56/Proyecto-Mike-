@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Colisiones {
     private List<Bala> balas;
-    private List<BotellaUno> botellas;
+    private List<BotellaBase> botellas;
 
-    public Colisiones(List<Bala> balas, List<BotellaUno> botellas) {
+    public Colisiones(List<Bala> balas, List<BotellaBase> botellas) {
         this.balas = balas;
         this.botellas = botellas;
     }
@@ -19,9 +19,9 @@ public class Colisiones {
             Bala bala = iterBalas.next();
             boolean impacto = false;
 
-            Iterator<BotellaUno> iterBotellas = botellas.iterator();
+            Iterator<BotellaBase> iterBotellas = botellas.iterator();
             while (iterBotellas.hasNext()) {
-                BotellaUno botella = iterBotellas.next();
+                BotellaBase botella = iterBotellas.next();
 
                 if (bala.getBala().getBoundsInLocal().intersects(botella.getBotella().getBoundsInLocal())) {
                     iterBotellas.remove();  // Eliminar botella
